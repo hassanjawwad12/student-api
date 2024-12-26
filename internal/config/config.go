@@ -2,17 +2,16 @@ package config
 
 import (
 	"flag"
+	"github.com/ilyakaznacheev/cleanenv"
 	"log"
 	"os"
-
-	"github.com/ilyakaznacheev/cleanenv"
 )
 
 // we kept the camel case so that it can be exported with the help of this package
 //run go get -u github.com/ilyakaznacheev/cleanenv  , we can do annotations with the help of this package
 
 type HTTPServer struct {
-	Addr string
+	Addr string `yaml:"address" env-required:"true"`
 }
 type Config struct {
 	Env         string `yaml:"env" env:"ENV" env-required:"true" env-default:"production"`

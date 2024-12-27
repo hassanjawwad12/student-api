@@ -4,15 +4,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
-	"log/slog"
-	"net/http"
-	"strconv"
-
 	"github.com/go-playground/validator/v10"
 	"github.com/hassanjawwad12/student-api/internal/storage"
 	"github.com/hassanjawwad12/student-api/internal/types"
 	"github.com/hassanjawwad12/student-api/internal/utils/response"
+	"io"
+	"log/slog"
+	"net/http"
+	"strconv"
 )
 
 // the storage being passed here is the dependency injection which makes it extensive
@@ -85,5 +84,22 @@ func GetById(storage storage.Storage) http.HandlerFunc {
 			return
 		}
 		response.WriteJSON(w, http.StatusOK, student)
+	}
+}
+
+func GetList(storage storage.Storage) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		slog.Info("getting all students")
+
+		students, err := storage.GetStudents()
+		if err != nil {
+			response.WriteJSON(w, http.StatusInternalServerError, err)
+			return
+		}
+
+		response.WriteJSON(w, http.StatusOK, students)
+
 	}
 }

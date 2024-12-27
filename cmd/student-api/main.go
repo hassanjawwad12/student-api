@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/hassanjawwad12/student-api/internal/config"
+	"github.com/hassanjawwad12/student-api/internal/http/handlers/student"
 	"log"
 	"log/slog"
 	"net/http"
@@ -10,8 +12,6 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-
-	"github.com/hassanjawwad12/student-api/internal/config"
 )
 
 func main() {
@@ -24,10 +24,7 @@ func main() {
 	//servemux stores a mapping between the predefined URL paths for your application and the corresponding handlers.
 	//Usually you have one servemux for your application containing all your routes.
 	router := http.NewServeMux()
-	router.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
-		// Convert the string to a byte slice before writing
-		w.Write([]byte("Welcome to student API"))
-	})
+	router.HandleFunc("POST /api/students", student.New())
 
 	//setup server
 	server := http.Server{

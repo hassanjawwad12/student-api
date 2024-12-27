@@ -9,6 +9,7 @@ import (
 
 // we kept the camel case so that it can be exported with the help of this package
 //run go get -u github.com/ilyakaznacheev/cleanenv  , we can do annotations with the help of this package
+//run go get github.com/go-playground/validator/v10, req validation
 
 type HTTPServer struct {
 	Addr string `yaml:"address" env-required:"true"`

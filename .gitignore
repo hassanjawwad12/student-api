@@ -9,5 +9,5 @@
 go.work 
 go.work.sum 
 
-storage
+/storage
 /config

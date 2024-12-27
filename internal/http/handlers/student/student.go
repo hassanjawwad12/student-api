@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-playground/validator/v10"
+	"github.com/hassanjawwad12/student-api/internal/storage"
 	"github.com/hassanjawwad12/student-api/internal/types"
 	"github.com/hassanjawwad12/student-api/internal/utils/response"
 	"io"
@@ -12,7 +13,8 @@ import (
 	"net/http"
 )
 
-func New() http.HandlerFunc {
+// the storage being passed here is the dependency injection which makes it extensive
+func New(storage storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		slog.Info("Creating a student")
@@ -41,7 +43,20 @@ func New() http.HandlerFunc {
 			return
 		}
 
-		response.WriteJSON(w, http.StatusCreated, map[string]string{"success": "OK"})
+		lastId, err := storage.CreateStudent(
+			student.Name,
+			student.Email,
+			student.Age,
+		)
+
+		slog.Info("user created successfully", slog.String("userId", fmt.Sprint(lastId)))
+
+		if err != nil {
+			response.WriteJSON(w, http.StatusInternalServerError, err)
+			return
+		}
+
+		response.WriteJSON(w, http.StatusCreated, map[string]int64{"id": lastId})
 
 		// Convert the string to a byte slice before writing
 		//w.Write([]byte("Welcome to student API"))

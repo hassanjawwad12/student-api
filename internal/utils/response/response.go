@@ -3,10 +3,9 @@ package response
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/go-playground/validator/v10"
 	"net/http"
 	"strings"
-
-	"github.com/go-playground/validator/v10"
 )
 
 type Response struct {

@@ -4,13 +4,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"log/slog"
+	"net/http"
+	"strconv"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/hassanjawwad12/student-api/internal/storage"
 	"github.com/hassanjawwad12/student-api/internal/types"
 	"github.com/hassanjawwad12/student-api/internal/utils/response"
-	"io"
-	"log/slog"
-	"net/http"
 )
 
 // the storage being passed here is the dependency injection which makes it extensive
@@ -60,5 +62,28 @@ func New(storage storage.Storage) http.HandlerFunc {
 
 		// Convert the string to a byte slice before writing
 		//w.Write([]byte("Welcome to student API"))
+	}
+}
+
+func GetById(storage storage.Storage) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		id := r.PathValue("id") //this name must be same as u gave in the main.go file handlerfunc api calling
+		slog.Info("getting the student", slog.String("id", id))
+
+		intId, err := strconv.ParseInt(id, 10, 64)
+		if err != nil {
+			response.WriteJSON(w, http.StatusBadRequest, response.GeneralError(err))
+			return
+		}
+		student, err := storage.GetStudentById(intId)
+
+		if err != nil {
+			slog.Error("error getting user", slog.String("id", id))
+			response.WriteJSON(w, http.StatusInternalServerError, response.GeneralError(err))
+			return
+		}
+		response.WriteJSON(w, http.StatusOK, student)
 	}
 }

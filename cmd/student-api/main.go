@@ -33,6 +33,7 @@ func main() {
 	//Usually you have one servemux for your application containing all your routes.
 	router := http.NewServeMux()
 	router.HandleFunc("POST /api/students", student.New(storage))
+	router.HandleFunc("GET /api/students/{id}", student.GetById(storage))
 
 	//setup server
 	server := http.Server{

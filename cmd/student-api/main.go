@@ -3,9 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/hassanjawwad12/student-api/internal/config"
-	"github.com/hassanjawwad12/student-api/internal/http/handlers/student"
-	"github.com/hassanjawwad12/student-api/internal/storage/sqlite"
 	"log"
 	"log/slog"
 	"net/http"
@@ -13,6 +10,10 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/hassanjawwad12/student-api/internal/config"
+	"github.com/hassanjawwad12/student-api/internal/http/handlers/student"
+	"github.com/hassanjawwad12/student-api/internal/storage/sqlite"
 )
 
 func main() {
@@ -35,6 +36,8 @@ func main() {
 	router.HandleFunc("POST /api/students", student.New(storage))
 	router.HandleFunc("GET /api/students/{id}", student.GetById(storage))
 	router.HandleFunc("GET /api/students", student.GetList(storage))
+	router.HandleFunc("DELETE /api/students/{id}", student.Delete(storage))
+	router.HandleFunc("PATCH /api/students/{id}", student.Update(storage))
 
 	//setup server
 	server := http.Server{
